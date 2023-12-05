@@ -9,9 +9,6 @@ class WordsCorpusService:
         self.words = self.get_words()
         self.words_frequency = nltk.FreqDist(self.get_words())
 
-    def get_categories(self):
-        return self.corpus.categories()
-
     def get_words(self):
         return self.corpus.words()
 
