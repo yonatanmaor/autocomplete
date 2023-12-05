@@ -1,4 +1,4 @@
-from data_access import autocomplete_data_access
+from da import autocomplete_data_access
 from services.words_corpus_service import WordsCorpusService
 from tqdm import tqdm
 
