@@ -45,3 +45,9 @@ def truncate_table(table_name):
     finally:
         conn.close()
 
+
+def execute_query(query, params):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(query, params)
+    return cursor.fetchall()
