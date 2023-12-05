@@ -3,6 +3,10 @@ from nltk.corpus import brown
 
 
 class WordsCorpusService:
+    """
+    Wraps the nltk brown corpus. Allows to get the words and their frequencies
+    in an efficient way.
+    """
 
     def __init__(self):
         self.corpus = brown

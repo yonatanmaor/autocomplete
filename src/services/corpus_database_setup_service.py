@@ -5,7 +5,8 @@ from tqdm import tqdm
 
 def add_corpus_words_to_db(bulk_size=100):
     """
-    Assuming the existence of a unique constraint on words
+    Populates the database with all corpus words and their scores (also taken from the corpus).
+    Assuming the existence of a unique constraint / PK on words
     """
     service = WordsCorpusService()
     word_rows = []
