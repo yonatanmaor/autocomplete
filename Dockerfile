@@ -11,9 +11,10 @@ RUN apt-get update -y && \
 COPY . /app
 
 RUN pip3 install --no-cache-dir -r requirements.txt
+RUN python3 download_nltk_requirements.py
 
 ENV PYTHONPATH /app/src
 
-EXPOSE 5000
+EXPOSE 1188
 
-CMD ["python3", "src/rest_modules/rest_main.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:1188", "wsgi:app"]

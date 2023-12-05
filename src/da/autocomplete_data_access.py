@@ -1,7 +1,7 @@
 from da import sqlite_data_access
 
 
-def get_autocomplete_options(username: str, prefix: str, limit: int):
+def get_autocomplete_options(prefix: str, limit: int):
     """
     return the most common words, up to 'limit' words, that start with 'prefix'
     sorted by their score (popularity of the word)
@@ -12,7 +12,24 @@ def get_autocomplete_options(username: str, prefix: str, limit: int):
     ORDER BY score DESC
     LIMIT ?
     """
-    return sqlite_data_access.execute_query(query, params=[f"{prefix}%", limit])
+    result = sqlite_data_access.execute_query(query, params=[f"{prefix}%", limit])
+    result = {x[0]: x[1] for x in result}
+    return result
+
+
+def get_user_autocomplete_options(username: str, prefix: str, limit: int):
+    """
+    return the most common words from the user dictionary, up to 'limit' words, that start with 'prefix'
+    """
+    query = """
+    SELECT word, score FROM user_word_scores
+    WHERE username = ? AND word LIKE ?
+    ORDER BY score DESC
+    LIMIT ?
+    """
+    result = sqlite_data_access.execute_query(query, params=[username, f"{prefix}%", limit])
+    result = {x[0]: x[1] for x in result}
+    return result
 
 
 def update_corpus_words(word_rows: list[dict]):
@@ -33,14 +50,12 @@ def get_user_word_scores(username: str, words: list[str] = None, page: int = Non
     """
     params = [username]
     if words is not None:
-        query += " AND word IN (?)"
+        query += " AND word IN ({})".format(", ".join(["?"] * len(words)))
         params += words
     query += " ORDER BY score DESC"
     if page is not None and page_size is not None:
         query += " LIMIT ? OFFSET ?"
         params += [page_size, (page - 1) * page_size]
-    else:
-        params = [username, ", ".join(words)]
     results = sqlite_data_access.execute_query(query, params=params)
     word_to_score = {x[0]: x[1] for x in results}
     return word_to_score
@@ -56,4 +71,5 @@ def update_user_word_score(username: str, word: str, score: int):
 
 if __name__ == '__main__':
     # pass
-    get_user_word_scores("testuser@gmail.com", ["test1", "test2"])
+    # get_user_word_scores("testuser@gmail.com", ["test1", "test2"])
+    clear_corpus_words()

@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from flask import Blueprint, request
 
@@ -29,6 +30,7 @@ def add_text():
     try:
         autocomplete_service.add_text(username=username, text=text)
     except Exception as e:
+        traceback.print_exc()
         return json.dumps({"message": "Failed to add text"}), 500
     return json.dumps({"message": "Success"})
 

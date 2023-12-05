@@ -11,6 +11,7 @@ def add_corpus_words_to_db(bulk_size=100):
     service = WordsCorpusService()
     word_rows = []
     for word in tqdm(service.get_words()):
+        word = word.lower().strip()
         word_rows.append({
             "word": word,
             "score": service.get_word_frequency(word),

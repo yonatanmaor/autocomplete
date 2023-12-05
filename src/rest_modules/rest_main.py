@@ -1,10 +1,7 @@
 import random
 from flask import Flask
-import sys
 
 from rest_modules.autocomplete_rest import autocomplete_blueprint
-
-print(sys.path)
 
 app = Flask(__name__)
 app.register_blueprint(autocomplete_blueprint, url_prefix='/autocomplete')
@@ -16,4 +13,4 @@ def is_alive():
 
 
 if __name__ == '__main__':
-    app.run(port=1188, host="0.0.0.0")
+    app.run(port=1188, host="0.0.0.0", debug=True)

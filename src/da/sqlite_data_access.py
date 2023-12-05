@@ -1,8 +1,14 @@
 import sqlite3
-
+import os
 
 def get_connection():
-    connection = sqlite3.connect('../../autocomplete_sqlite.db')
+    path = os.path.abspath('../../autocomplete_sqlite.db')
+    if not os.path.exists(path):
+        # running on docker
+        path = os.path.abspath('/app/autocomplete_sqlite.db')
+        if not os.path.exists(path):
+            raise Exception(f"File {path} does not exist")
+    connection = sqlite3.connect(path)
     return connection
 
 
