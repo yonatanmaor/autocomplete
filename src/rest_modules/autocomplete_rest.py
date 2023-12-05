@@ -31,3 +31,18 @@ def add_text():
     except Exception as e:
         return json.dumps({"message": "Failed to add text"}), 500
     return json.dumps({"message": "Success"})
+
+
+@autocomplete_blueprint.route('/added_words', methods=['GET'])
+def get_added_words():
+    try:
+        page = rest_utils.get_int_param(param_name='page', default=1)
+        page_size = rest_utils.get_int_param(param_name='page_size', default=100)
+    except KeyError:
+        return json.dumps({"message": """Invalid parameters, please provide page (starting from 1) and page_size (up to 100) params"""}), 400
+    if page_size > 100:
+        page_size = 100
+    username = rest_utils.get_authenticated_username()
+    return json.dumps(autocomplete_service.get_user_word_scores(username=username,
+                                                                page=page,
+                                                                page_size=page_size))

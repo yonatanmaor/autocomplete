@@ -26,13 +26,23 @@ def clear_corpus_words():
     sqlite_data_access.truncate_table("word_scores")
 
 
-def get_user_word_scores(username: str, words: list[str]):
+def get_user_word_scores(username: str, words: list[str] = None, page: int = None, page_size: int = None):
     query = """
     SELECT word, score FROM user_word_scores
-    WHERE username = ? AND word IN (?)
+    WHERE username = ?
     """
-    results = sqlite_data_access.execute_query(query, params=[username, ", ".join(words)])
-    word_to_score = {x[1]: x[2] for x in results}
+    params = [username]
+    if words is not None:
+        query += " AND word IN (?)"
+        params += words
+    query += " ORDER BY score DESC"
+    if page is not None and page_size is not None:
+        query += " LIMIT ? OFFSET ?"
+        params += [page_size, (page - 1) * page_size]
+    else:
+        params = [username, ", ".join(words)]
+    results = sqlite_data_access.execute_query(query, params=params)
+    word_to_score = {x[0]: x[1] for x in results}
     return word_to_score
 
 

@@ -14,12 +14,16 @@ def add_text(username, text):
     words = word_tokenize(text)
     word_to_count = _count_words(words)
     existing_word_to_score = autocomplete_data_access.get_user_word_scores(username=username,
-                                                                         words=list(word_to_count.keys()))
+                                                                           words=list(word_to_count.keys()))
     for word in existing_word_to_score:
         word_to_count[word] += existing_word_to_score[word]
 
     for word, count in word_to_count.items():
         autocomplete_data_access.update_user_word_score(username=username, word=word, score=count)
+
+
+def get_user_word_scores(username: str, page: int, page_size: int):
+    return autocomplete_data_access.get_user_word_scores(username=username, page=page, page_size=page_size)
 
 
 def _count_words(words):
